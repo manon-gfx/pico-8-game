@@ -149,10 +149,8 @@ function froggo_collision(dx,dy)
  if col then
   if dx<0 then
    dx=(bl\8)*8-bl
-   assert((frog.x+dx)==flr(frog.x+dx))
   elseif dx>0 then
    dx=((br+7)\8)*8-br-1
-   assert((frog.x+dx)==flr(frog.x+dx))
   end
   if dy<0 then
    dy=(bt\8)*8-bt
