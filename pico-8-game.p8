@@ -38,19 +38,20 @@ function draw_item(i)
   -- draw sprakle effect
   magic=flr(t()*8)%6
   if magic==0 then
-  	if not kaas then
+  	if not i.sparki then
    	i.sparkx=i.x+rnd(8)
    	i.sparky=i.y+rnd(8)
-   	kaas =true
+   	i.sparki =true
    end
    sx=i.sparkx
    sy=i.sparky
    circ(sx, sy, 0, 7)
+   i.sparki=false
   elseif magic==1 then
    sx=i.sparkx
    sy=i.sparky
    circ(sx, sy, 1, 6)
-   kaas=false
+   i.sparki=false
   elseif magic==2 then
    sx=i.sparkx
    sy=i.sparky
@@ -58,7 +59,7 @@ function draw_item(i)
    pset(sx+2, sy, 5)
    pset(sx, sy-2, 5)
    pset(sx, sy+2, 5)
-   kaas=false
+   i.sparki=false
   end
 end
 
