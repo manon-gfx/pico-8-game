@@ -17,10 +17,14 @@ function _init()
 	inventory={}
 	
  p={
-	 x=8,
-	 y=44,
-	 sp=16, --sprite index
-	}	
+  w=8, --width
+  h=8, --height
+  bw=6, --bbox width
+  bh=8, --bbox height
+  x=8, --x position
+  y=44, --y position
+  sp=16, --sprite index
+	}
 end
 
 function _update()
@@ -106,12 +110,58 @@ function player_movement()
   end
  end
 
+ dx,dy=player_collision(dx,dy)
+
  p.x+=dx
  p.y+=dy
 end
-	
-	
 
+function player_collision(dx,dy)
+ -- bounds l,r,t,b --
+ bl=p.x+(p.w-p.bw)/2
+ br=p.x+(p.w+p.bw)/2-1
+ bt=p.y+(p.h-p.bh)/2
+ bb=p.y+(p.h+p.bh)/2-1
+
+ -- check collision --
+ col=false
+ if dx<0 then
+  spr_t=mget((bl+dx)\8,bt\8)
+  spr_b=mget((bl+dx)\8,bb\8)
+  col=fget(spr_t,0) or fget(spr_b,0)
+ elseif dx>0 then
+  spr_t=mget((br+dx)\8,bt\8)
+  spr_b=mget((br+dx)\8,bb\8)
+  col=fget(spr_t,0) or fget(spr_b,0)
+ end
+ if dy<0 then
+  spr_l=mget(bl\8,(bt+dy)\8)
+  spr_r=mget(br\8,(bt+dy)\8)
+  col=fget(spr_l,0) or fget(spr_r,0)
+ elseif dy>0 then
+  spr_l=mget(bl\8,(bb+dy)\8)
+  spr_r=mget(br\8,(bb+dy)\8)
+  col=fget(spr_l,0) or fget(spr_r,0)
+ end
+
+ -- resolve collision --
+ if col then
+  if dx<0 then
+   dx=(bl\8)*8-bl
+   assert((p.x+dx)==flr(p.x+dx))
+  elseif dx>0 then
+   dx=((br+7)\8)*8-br-1
+   assert((p.x+dx)==flr(p.x+dx))
+  end
+  if dy<0 then
+   dy=(bt\8)*8-bt
+  elseif dy>0 then
+   dy=((bb+7)\8)*8-bb-1
+  end
+ end
+
+ return dx, dy
+end
 -->8
 function draw_ui()
 	-- black background --
