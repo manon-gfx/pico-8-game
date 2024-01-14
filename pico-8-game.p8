@@ -2,21 +2,21 @@ pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
 function _init()
-	print("♥")
+ print("♥")
 
-	items={} -- list of items on screen
+ items={} -- list of items on screen
 
- --	spawn key
+ -- spawn key
  add(items, {
   t="key",
   x=8,
   y=16,
   sp=2,
  })
-	
-	inventory={}
-	
- p={
+ 
+ inventory={}
+ 
+ frog={
   w=8, --width
   h=8, --height
   bw=6, --bbox width
@@ -24,11 +24,11 @@ function _init()
   x=8, --x position
   y=44, --y position
   sp=16, --sprite index
-	}
+ }
 end
 
 function _update()
- player_movement()	
+ froggo_movement()
 end
 
 function draw_item(i)
@@ -41,7 +41,7 @@ function draw_item(i)
   	if not i.sparki then
    	i.sparkx=i.x+rnd(8)
    	i.sparky=i.y+rnd(8)
-   	i.sparki =true
+   	i.sparki=true
    end
    sx=i.sparkx
    sy=i.sparky
@@ -64,33 +64,33 @@ function draw_item(i)
 end
 
 function _draw()
-	cls()
-	map()
-	
-	-- draw items
-	foreach(items, draw_item)
+ cls()
+ map()
+ 
+ -- draw items
+ foreach(items, draw_item)
 
-	-- draw player
-	palt(0,false)
-	palt(4,true)
-	ptile=mget((p.x+4)\8,(p.y+4)\8)
-	pspr=p.sp;
-	pspr+=flr(t()*4)%2
-	
-	if fget(ptile,1) then
-		pspr+=16
-	end
- spr(pspr,p.x,p.y)
-	palt(0,true)
-	palt(4,false)
-	
-	draw_ui()
+ -- draw froggo
+ palt(0,false)
+ palt(4,true)
+ ptile=mget((frog.x+4)\8,(frog.y+4)\8)
+ pspr=frog.sp;
+ pspr+=flr(t()*4)%2
+ 
+ if fget(ptile,1) then
+  pspr+=16
+ end
+ spr(pspr,frog.x,frog.y)
+ palt(0,true)
+ palt(4,false)
+ 
+ draw_ui()
 end
 
 -->8
 vel=1
 
-function player_movement()
+function froggo_movement()
  dx=0
  dy=0
 
@@ -111,18 +111,18 @@ function player_movement()
   end
  end
 
- dx,dy=player_collision(dx,dy)
+ dx,dy=froggo_collision(dx,dy)
 
- p.x+=dx
- p.y+=dy
+ frog.x+=dx
+ frog.y+=dy
 end
 
-function player_collision(dx,dy)
+function froggo_collision(dx,dy)
  -- bounds l,r,t,b --
- bl=p.x+(p.w-p.bw)/2
- br=p.x+(p.w+p.bw)/2-1
- bt=p.y+(p.h-p.bh)/2
- bb=p.y+(p.h+p.bh)/2-1
+ bl=frog.x+(frog.w-frog.bw)/2
+ br=frog.x+(frog.w+frog.bw)/2-1
+ bt=frog.y+(frog.h-frog.bh)/2
+ bb=frog.y+(frog.h+frog.bh)/2-1
 
  -- check collision --
  col=false
@@ -149,10 +149,10 @@ function player_collision(dx,dy)
  if col then
   if dx<0 then
    dx=(bl\8)*8-bl
-   assert((p.x+dx)==flr(p.x+dx))
+   assert((frog.x+dx)==flr(frog.x+dx))
   elseif dx>0 then
    dx=((br+7)\8)*8-br-1
-   assert((p.x+dx)==flr(p.x+dx))
+   assert((frog.x+dx)==flr(frog.x+dx))
   end
   if dy<0 then
    dy=(bt\8)*8-bt
@@ -165,21 +165,21 @@ function player_collision(dx,dy)
 end
 -->8
 function draw_ui()
-	-- black background --
-	rectfill(0, 96, 127, 127, 0)
-	-- gray border --
-	rect(0, 96, 127, 127, 6)
+ -- black background --
+ rectfill(0, 96, 127, 127, 0)
+ -- gray border --
+ rect(0, 96, 127, 127, 6)
 
-	print("♥♥♥", 4, 100, 8)
+ print("♥♥♥", 4, 100, 8)
 
-	-- item box --
-	print("items", 105, 100, 7)
-	rect(103, 98, 125, 125, 6)
-	-- current time --
-	spr(2, 105, 106) -- slot 0
-	spr(2, 116, 106) -- slot 1
-	spr(2, 105, 116) -- slot 2
-	spr(2, 116, 116) -- slot 3
+ -- item box --
+ print("items", 105, 100, 7)
+ rect(103, 98, 125, 125, 6)
+ -- current time --
+ spr(2, 105, 106) -- slot 0
+ spr(2, 116, 106) -- slot 1
+ spr(2, 105, 116) -- slot 2
+ spr(2, 116, 116) -- slot 3
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000033333333333333335444444433333333
