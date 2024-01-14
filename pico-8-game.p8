@@ -96,13 +96,13 @@ function player_movement()
 
  if l+r+u+d==1 then
   if l!=0 then
-   dx-=1
+   dx-=vel
   elseif r!=0 then
-   dx+=1
+   dx+=vel
   elseif u!=0 then
-   dy-=1
+   dy-=vel
   elseif d!=0 then
-   dy+=1
+   dy+=vel
   end
  end
 
