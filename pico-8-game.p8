@@ -13,9 +13,9 @@ function _init()
   y=16,
   sp=2,
  })
- 
+
  inventory={}
- 
+
  frog={
   w=8, --width
   h=8, --height
@@ -34,14 +34,14 @@ end
 function draw_item(i)
   -- draw item sprite
   spr(i.sp, i.x, i.y)
-  
+
   -- draw sprakle effect
   magic=flr(t()*8)%6
   if magic==0 then
-  	if not i.sparki then
-   	i.sparkx=i.x+rnd(8)
-   	i.sparky=i.y+rnd(8)
-   	i.sparki=true
+   if not i.sparki then
+    i.sparkx=i.x+rnd(8)
+    i.sparky=i.y+rnd(8)
+    i.sparki=true
    end
    sx=i.sparkx
    sy=i.sparky
@@ -66,7 +66,7 @@ end
 function _draw()
  cls()
  map()
- 
+
  -- draw items
  foreach(items, draw_item)
 
@@ -76,14 +76,14 @@ function _draw()
  ptile=mget((frog.x+4)\8,(frog.y+4)\8)
  pspr=frog.sp;
  pspr+=flr(t()*4)%2
- 
+
  if fget(ptile,1) then
   pspr+=16
  end
  spr(pspr,frog.x,frog.y)
  palt(0,true)
  palt(4,false)
- 
+
  draw_ui()
 end
 
