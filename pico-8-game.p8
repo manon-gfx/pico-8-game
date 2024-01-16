@@ -30,11 +30,12 @@ function _init()
 
  -- spawn key
  add(items, {
-  t="key",
+  t="key0",
   x=8,
   y=16,
   sp=2,
   bb={x=0,y=3,w=8,h=3},
+  delete=false,
  })
 
  inventory={}
@@ -52,12 +53,25 @@ end
 function _update()
  froggo_movement()
 
+ -- froggo item collision
  a=trans_aabb(frog.bb,frog.x,frog.y)
  for i=1,#items do
   it=items[i]
   b=trans_aabb(it.bb,it.x,it.y)
   if aabb_overlap(a,b) then
-   -- collision!
+   event_frog_col_item(frog, it)
+  end
+ end
+
+ -- clean up items marked for
+ -- deletion
+ i=1
+ while i<=#items do
+  it=items[i]
+  if it.delete then
+   deli(items,i)
+  else
+   i+=1
   end
  end
 end
@@ -193,6 +207,16 @@ function froggo_collision(dx,dy)
 
  return dx, dy
 end
+
+function event_frog_col_item(
+ frog,
+ item)
+ if item.t=="key0" then
+  sfx(0)
+  item.delete=true
+ end
+end
+
 -->8
 function draw_ui()
  -- black background --
