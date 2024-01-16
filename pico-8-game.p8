@@ -52,10 +52,10 @@ end
 function _update()
  froggo_movement()
 
- a=trans_aabb(p.bb,p.x,p.y)
+ a=trans_aabb(frog.bb,frog.x,frog.y)
  for i=1,#items do
-  i=items[i]
-  b=trans_aabb(i.bb,i.x,i.y)
+  it=items[i]
+  b=trans_aabb(it.bb,it.x,it.y)
   if aabb_overlap(a,b) then
    -- collision!
   end
@@ -149,7 +149,7 @@ function froggo_movement()
 end
 
 function froggo_collision(dx,dy)
- bb=trans_aabb(p.bb,p.x,p.y)
+ bb=trans_aabb(frog.bb,frog.x,frog.y)
  -- bounds l,r,t,b --
  bl=bb.x
  br=bb.x+bb.w-1
