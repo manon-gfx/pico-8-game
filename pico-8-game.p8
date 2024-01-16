@@ -47,6 +47,10 @@ function _init()
   x=8, --x position
   y=44, --y position
   sp=16, --sprite index
+  dx=0, --x speed
+  dy=0, --y speed
+  left=false, --facing left
+  down=false, --facing down
  }
 
  -- create wasx variables
@@ -124,16 +128,17 @@ function _draw()
  pspr=frog.sp;
  pspr+=flr(t()*4)%2
 
- if not btn(➡️) then
+ if frog.dx==0 then
   jump=false
- elseif not wasr then
+ elseif (btn(⬅️) and not wasl) or
+  (btn(➡️) and not wasr) then
   jump=true
-  tjump=flr(t()*4)
+  tjump=flr(t()*frog.dx*4)
  end
 
  sprlist={16,18,19,20}
  if jump then
-  dtjump=flr(t()*4)-tjump
+  dtjump=flr(t()*frog.dx*4)-tjump
   pspr=sprlist[dtjump%4+1]
  end
 
@@ -141,7 +146,7 @@ function _draw()
   pspr+=16
  end
 
- spr(pspr,frog.x,frog.y)
+ spr(pspr,frog.x,frog.y,1,1,frog.left)
  palt(0,true)
  palt(4,false)
 
@@ -152,7 +157,7 @@ function _draw()
 end
 
 -->8
-vel=1
+vel=1.5
 
 function froggo_movement()
  dx=0
@@ -166,16 +171,25 @@ function froggo_movement()
  if l+r+u+d==1 then
   if l!=0 then
    dx-=vel
+   frog.left=true
+   frog.down=false
   elseif r!=0 then
    dx+=vel
+   frog.left=false
+   frog.down=false
   elseif u!=0 then
    dy-=vel
+   frog.down=false
   elseif d!=0 then
    dy+=vel
+   frog.down=true
   end
  end
 
  dx,dy=froggo_collision(dx,dy)
+
+ frog.dx=dx
+ frog.dy=dy
 
  frog.x+=dx
  frog.y+=dy
