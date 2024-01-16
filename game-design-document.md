@@ -16,7 +16,7 @@ Code:
 - [x] Player movement
 - [x] Player collision with map
 - [x] Sleutel renderen
-- [ ] Sleutel oppakken
+- [x] Sleutel oppakken
 - [ ] Deur
 - [ ] Deur openen met sleutel
 - [x] UI + Inventory renderen
