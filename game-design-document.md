@@ -20,7 +20,8 @@ Code:
 - [ ] Deur
 - [ ] Deur openen met sleutel
 - [x] UI + Inventory renderen
-- [ ] Functionele inventory
+- [x] Functionele inventory
+- [x] Formatting script
 
 Art:
 - [x] Speler maken
