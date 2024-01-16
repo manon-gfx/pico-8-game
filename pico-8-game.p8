@@ -91,7 +91,6 @@ function draw_item(i)
    sx=i.sparkx
    sy=i.sparky
    circ(sx, sy, 0, 7)
-   i.sparki=false
   elseif magic==1 then
    sx=i.sparkx
    sy=i.sparky
