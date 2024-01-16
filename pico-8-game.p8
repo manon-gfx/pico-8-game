@@ -48,6 +48,9 @@ function _init()
   y=44, --y position
   sp=16, --sprite index
  }
+
+ -- create wasx variables
+ wasbuttons()
 end
 
 function _update()
@@ -124,11 +127,15 @@ function _draw()
  if fget(ptile,1) then
   pspr+=16
  end
+
  spr(pspr,frog.x,frog.y)
  palt(0,true)
  palt(4,false)
 
  draw_ui()
+
+ -- update wasx variables
+ wasbuttons()
 end
 
 -->8
@@ -235,6 +242,15 @@ function draw_ui()
  for i=1,min(#inventory,4) do
   spr(2, x[(i-1)\2], y[(i-1)\2])
  end
+end
+-->8
+function wasbuttons()
+ wasl=btn(⬅️)
+ wasr=btn(➡️)
+ wasu=btn(⬆️)
+ wasd=btn(⬇️)
+ wasx=btn(❎)
+ waso=btn(🅾️)
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000033333333333333335444444433333333
