@@ -1,6 +1,28 @@
 pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
+-- test overlap between bounding
+-- boxes
+function aabb_overlap(b0, b1)
+ if b0.x<b1.x+b1.w and
+    b0.x+b0.w>b1.x and
+    b0.y<b1.y+b1.h and
+    b0.y+b0.h>b1.y then
+  return true
+ else
+  return false
+ end
+end
+-- translate aabb
+function trans_aabb(b, x, y)
+  return{
+   x=b.x+x,
+   y=b.y+y,
+   w=b.w,
+   h=b.h
+  }
+end
+
 function _init()
  print("♥")
 
@@ -12,6 +34,7 @@ function _init()
   x=8,
   y=16,
   sp=2,
+  bb={x=0,y=3,w=8,h=3},
  })
 
  inventory={}
@@ -19,8 +42,7 @@ function _init()
  frog={
   w=8, --width
   h=8, --height
-  bw=6, --bbox width
-  bh=8, --bbox height
+  bb={x=1,y=1,w=6,h=7},
   x=8, --x position
   y=44, --y position
   sp=16, --sprite index
@@ -29,6 +51,15 @@ end
 
 function _update()
  froggo_movement()
+
+ a=trans_aabb(p.bb,p.x,p.y)
+ for i=1,#items do
+  i=items[i]
+  b=trans_aabb(i.bb,i.x,i.y)
+  if aabb_overlap(a,b) then
+   -- collision!
+  end
+ end
 end
 
 function draw_item(i)
@@ -118,11 +149,12 @@ function froggo_movement()
 end
 
 function froggo_collision(dx,dy)
+ bb=trans_aabb(p.bb,p.x,p.y)
  -- bounds l,r,t,b --
- bl=frog.x+(frog.w-frog.bw)/2
- br=frog.x+(frog.w+frog.bw)/2-1
- bt=frog.y+(frog.h-frog.bh)/2
- bb=frog.y+(frog.h+frog.bh)/2-1
+ bl=bb.x
+ br=bb.x+bb.w-1
+ bt=bb.y
+ bb=bb.y+bb.h-1
 
  -- check collision --
  col=false
