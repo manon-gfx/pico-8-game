@@ -1,28 +1,6 @@
 pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
--- test overlap between bounding
--- boxes
-function aabb_overlap(b0, b1)
- if b0.x<b1.x+b1.w and
-    b0.x+b0.w>b1.x and
-    b0.y<b1.y+b1.h and
-    b0.y+b0.h>b1.y then
-  return true
- else
-  return false
- end
-end
--- translate aabb
-function trans_aabb(b, x, y)
-  return{
-   x=b.x+x,
-   y=b.y+y,
-   w=b.w,
-   h=b.h
-  }
-end
-
 function _init()
  print("♥")
 
@@ -271,6 +249,7 @@ function draw_ui()
  end
 end
 -->8
+-- update previous button state
 function wasbuttons()
  wasl=btn(⬅️)
  wasr=btn(➡️)
@@ -279,6 +258,30 @@ function wasbuttons()
  wasx=btn(❎)
  waso=btn(🅾️)
 end
+
+-- test overlap between bounding
+-- boxes
+function aabb_overlap(b0, b1)
+ if b0.x<b1.x+b1.w and
+    b0.x+b0.w>b1.x and
+    b0.y<b1.y+b1.h and
+    b0.y+b0.h>b1.y then
+  return true
+ else
+  return false
+ end
+end
+-- translate aabb
+function trans_aabb(b, x, y)
+  return{
+   x=b.x+x,
+   y=b.y+y,
+   w=b.w,
+   h=b.h
+  }
+end
+
+
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000033333333333333335444444433333333
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003333333333bb3b334445444433b3333b
