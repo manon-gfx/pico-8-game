@@ -108,8 +108,8 @@ function _draw()
 
  if frog.dx==0 then
   jump=false
- elseif (btn(⬅️) and not wasl) or
-  (btn(➡️) and not wasr) then
+ elseif (btn(⬅️) or btn(➡️))
+  and jump==false then
   jump=true
   tjump=flr(t()*frog.dx*4)
  end
