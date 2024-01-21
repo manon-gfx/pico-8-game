@@ -29,6 +29,7 @@ function _init()
  })
 
  inventory={}
+ particles={}
 
  frog={
   w=8, --width
@@ -57,6 +58,29 @@ function _update()
   b=trans_aabb(it.bb,it.x,it.y)
   if aabb_overlap(a,b) then
    event_frog_col_item(frog, it)
+  end
+ end
+
+ -- update particles
+ i=1
+ while i<=#particles do
+  p=particles[i]
+  p.vx+=p.ax
+  p.vy+=p.ay
+  p.x+=p.vx
+  p.y+=p.vy
+
+  sbb={x=0,y=0,w=128,h=96}
+  if type(p.sp)=="number" then
+   bb={x=p.x,y=p.y,w=8,h=8}
+  else
+   bb={x=p.x,y=p.y,w=p.sp.w,h=p.sp.h}
+  end
+
+  if aabb_overlap(bb, sbb) then
+   i+=1
+  else
+   deli(particles, i)
   end
  end
 
@@ -150,6 +174,18 @@ function _draw()
  palt(0,true)
  palt(4,false)
 
+ -- render particles
+ for i=1,#particles do
+  p=particles[i]
+  if type(p.sp)=="number" then
+   spr(p.sp,p.x,p.y)
+  else
+   sp=p.sp
+   sspr(sp.x,sp.y,sp.w,sp.h,p.x,p.y)
+  end
+ end
+
+ camera(0,0)
  draw_ui()
 
  -- update wasx variables
@@ -253,12 +289,31 @@ function event_frog_col_item(
   keyi=find_in_inv("key0")
   if keyi!=nil then
    deli(inventory,keyi)
-   -- open doors
---   mset(15,4,45)
---   mset(15,7,46)
    -- the boy's soul
    mset(15,5,62)
    mset(15,6,61)
+
+   item.delete=true
+
+   -- spawn particles
+   add(particles,{
+    x=item.x,
+    y=item.y,
+    vx=-1.2,
+    vy=-4,
+    ax=0,
+    ay=0.5,
+    sp={x=32,y=0,w=8,h=4}
+   })
+   add(particles,{
+    x=item.x,
+    y=item.y+4,
+    vx=-1,
+    vy=-3,
+    ax=0,
+    ay=0.5,
+    sp={x=32,y=4,w=8,h=4}
+   })
   end
  end
 end
