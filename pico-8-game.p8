@@ -151,11 +151,12 @@ function draw_item(i)
  end
 end
 
-function draw_room(r)
+function draw_room_map(r)
  local rx=(r%8)*16
  local ry=(r\8)*12
  map(rx,ry, 0,0, 16,12)
-
+end
+function draw_room_obj(r)
  -- draw items
  for i in all(items) do
   if i.r==r then
@@ -215,14 +216,19 @@ function _draw()
   end
 
   camera(c0x,c0y)
-  draw_room(frog.r)
-
+  draw_room_map(frog.r)
   camera(c1x,c1y)
-  draw_room(nr)
+  draw_room_map(nr)
+
+  camera(c0x,c0y)
+  draw_room_obj(frog.r)
+  camera(c1x,c1y)
+  draw_room_obj(nr)
 
   camera()
  else
-  draw_room(frog.r)
+  draw_room_map(frog.r)
+  draw_room_obj(frog.r)
  end
 
  draw_ui()
@@ -432,7 +438,11 @@ end
 function mget2(x,y)
  x+=(frog.r%8)*16
  y+=(frog.r\8)*12
- return mget(x,y)
+ if x<0 or x>=16 or y<0 or y>=12 then
+  return 0
+ else
+  return mget(x,y)
+ end
 end
 
 -- update previous button state
