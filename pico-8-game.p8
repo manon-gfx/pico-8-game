@@ -436,11 +436,11 @@ end
 
 -- mget with room correction
 function mget2(x,y)
- x+=(frog.r%8)*16
- y+=(frog.r\8)*12
  if x<0 or x>=16 or y<0 or y>=12 then
   return 0
  else
+  x+=(frog.r%8)*16
+  y+=(frog.r\8)*12
   return mget(x,y)
  end
 end
