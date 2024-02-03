@@ -55,6 +55,38 @@ end
 function _update()
  froggo_movement()
 
+ room=rooms[frog.r]
+
+ if frog.x+frog.bb.x<0 then
+  if room.w==nil then
+   frog.x=-frog.bb.x
+   frog.dx=0
+  else
+   sfx(0)
+  end
+ elseif frog.x+frog.bb.x+frog.bb.w>=128 then
+  if room.e==nil then
+   frog.x=128-frog.bb.x-frog.bb.w
+   frog.dx=0
+  else
+   sfx(0)
+  end
+ elseif frog.y+frog.bb.y<0 then
+  if room.n==nil then
+   frog.y=-frog.bb.y
+   frog.dy=0
+  else
+   sfx(0)
+  end
+ elseif frog.y+frog.bb.y+frog.bb.h>=96 then
+  if room.s==nil then
+   frog.y=96-frog.bb.y-frog.bb.h
+   frog.dy=0
+  else
+   sfx(0)
+  end
+ end
+
  -- froggo item collision
  a=trans_aabb(frog.bb,frog.x,frog.y)
  for i in all(items) do
