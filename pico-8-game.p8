@@ -62,7 +62,10 @@ function _update()
 
  init_func=room.init
  if init_func!=nil then
-  init_func()
+  if last_init!=init_func then
+   init_func()
+   last_init=init_func
+  end
  end
 
  if frog.x+frog.bb.x<0 then
