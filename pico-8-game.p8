@@ -443,8 +443,9 @@ end
 -->8
 --room layout
 rooms={
- [0]={e=1},
- [1]={w=0},
+ [0]={e=1}, // entry
+ [1]={w=0}, // first room castle
+ [2]={w=2,e=0}, // repeating garden
 }
 
 __gfx__
