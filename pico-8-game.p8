@@ -514,7 +514,7 @@ function detect_roomtrans()
    nr=rooms[frog.r].w
   end
   frog.dx=0
- elseif frog.x+frog.bb.x+frog.bb.w>=128 then
+ elseif frog.x+frog.bb.x+frog.bb.w>128 then
   if room.e==nil then
    frog.x=128-frog.bb.x-frog.bb.w
   else
@@ -532,7 +532,7 @@ function detect_roomtrans()
    nr=rooms[frog.r].n
   end
   frog.dy=0
- elseif frog.y+frog.bb.y+frog.bb.h>=96 then
+ elseif frog.y+frog.bb.y+frog.bb.h>96 then
   if room.s==nil then
    frog.y=96-frog.bb.y-frog.bb.h
   else
@@ -555,7 +555,7 @@ function update_roomtrans()
 
   if roomtrans=="n" then
    frog.r=room.n
-   frog.y=96-frog.bb.y-frog.bb.h-1
+   frog.y=96-frog.bb.y-frog.bb.h
   elseif roomtrans=="e" then
    frog.r=room.e
    frog.x=-frog.bb.x
@@ -565,7 +565,7 @@ function update_roomtrans()
   else
    assert(roomtrans=="w")
    frog.r=room.w
-   frog.x=128-frog.bb.x-frog.bb.w-1
+   frog.x=128-frog.bb.x-frog.bb.w
   end
 
   roomtrans="" // finish transition
