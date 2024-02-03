@@ -1,6 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 41
 __lua__
+--main
 function _init()
  print("♥")
 
@@ -205,6 +206,7 @@ function _draw()
 end
 
 -->8
+--player logic
 vel=1.5
 
 function froggo_movement()
@@ -331,6 +333,7 @@ function event_frog_col_item(
 end
 
 -->8
+--user interface
 function draw_ui()
  -- black background --
  rectfill(0, 96, 127, 127, 0)
@@ -350,6 +353,8 @@ function draw_ui()
  end
 end
 -->8
+--helpers
+
 -- update previous button state
 function wasbuttons()
  wasl=btn(⬅️)
