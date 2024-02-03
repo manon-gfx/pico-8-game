@@ -258,6 +258,7 @@ function _draw()
    print(p)
   end
  end
+ prints={}
 end
 
 -->8
