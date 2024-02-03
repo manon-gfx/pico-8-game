@@ -50,6 +50,9 @@ function _init()
 
  -- create wasx variables
  wasbuttons()
+
+ -- init debug print
+ prints={}
 end
 
 function _update()
@@ -238,6 +241,15 @@ function _draw()
 
  -- update wasx variables
  wasbuttons()
+
+ -- debugging prints
+ if #prints>0 then
+  camera(0,0)
+  print("",0,0,7)
+  for p in all(prints) do
+   print(p)
+  end
+ end
 end
 
 -->8
