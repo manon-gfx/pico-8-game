@@ -5,6 +5,8 @@ __lua__
 function _init()
  print("♥")
 
+ roomtrans=""
+ roomtranst=t()
  items={} -- list of items on screen
 
  -- spawn key
@@ -56,46 +58,11 @@ function _init()
 end
 
 function _update()
- froggo_movement()
-
- room=rooms[frog.r]
-
- init_func=room.init
- if init_func!=nil then
-  if last_init!=init_func then
-   init_func()
-   last_init=init_func
-  end
- end
-
- if frog.x+frog.bb.x<0 then
-  if room.w==nil then
-   frog.x=-frog.bb.x
-   frog.dx=0
-  else
-   sfx(0)
-  end
- elseif frog.x+frog.bb.x+frog.bb.w>=128 then
-  if room.e==nil then
-   frog.x=128-frog.bb.x-frog.bb.w
-   frog.dx=0
-  else
-   sfx(0)
-  end
- elseif frog.y+frog.bb.y<0 then
-  if room.n==nil then
-   frog.y=-frog.bb.y
-   frog.dy=0
-  else
-   sfx(0)
-  end
- elseif frog.y+frog.bb.y+frog.bb.h>=96 then
-  if room.s==nil then
-   frog.y=96-frog.bb.y-frog.bb.h
-   frog.dy=0
-  else
-   sfx(0)
-  end
+ if roomtrans == "" then
+  froggo_movement()
+  detect_roomtrans()
+ else
+  update_roomtrans()
  end
 
  -- froggo item collision
@@ -144,8 +111,6 @@ function _update()
 end
 
 function draw_item(i)
- if(i.r!=frog.r) return
-
  if i.tcol!=nil then
   palt(0,false)
   palt(i.tcol,true)
@@ -186,63 +151,78 @@ function draw_item(i)
  end
 end
 
-function _draw()
- cls()
-
- rx=(frog.r%8)*16
- ry=(frog.r\8)*12
+function draw_room(r)
+ local rx=(r%8)*16
+ local ry=(r\8)*12
  map(rx,ry, 0,0, 16,12)
 
  -- draw items
- foreach(items, draw_item)
+ for i in all(items) do
+  if i.r==r then
+   draw_item(i)
+  end
+ end
 
  -- draw froggo
  palt(0,false)
  palt(4,true)
- ptile=mget2((frog.x+4)\8,(frog.y+4)\8)
- pspr=frog.sp;
- pspr+=flr(t()*4)%2
-
- if frog.dx==0 then
-  jump=false
- elseif (btn(⬅️) or btn(➡️))
-  and jump==false then
-  jump=true
-  tjump=flr(t()*frog.dx*4)
- end
-
- sprlist={16,18,19,20}
- if jump then
-  dtjump=flr(t()*frog.dx*4)-tjump
-  pspr=sprlist[dtjump%4+1]
- end
-
- // froggo outline
- if fget(ptile,1) then
-  for i=3,11,4 do pal(i,0) end
-  spr(pspr,frog.x-1,frog.y,1,1,frog.left)
-  spr(pspr,frog.x+1,frog.y,1,1,frog.left)
-  spr(pspr,frog.x,frog.y-1,1,1,frog.left)
-  spr(pspr,frog.x,frog.y+1,1,1,frog.left)
-
-  pal()
-  palt(0,false)
-  palt(4,true)
- end
-
- spr(pspr,frog.x,frog.y,1,1,frog.left)
-
+ draw_froggo()
  palt()
 
  -- render particles
- for i=1,#particles do
-  p=particles[i]
-  if type(p.sp)=="number" then
-   spr(p.sp,p.x,p.y)
-  else
-   sp=p.sp
-   sspr(sp.x,sp.y,sp.w,sp.h,p.x,p.y)
+ for p in all(particles) do
+  if p.r==r then
+   if type(p.sp)=="number" then
+    spr(p.sp,p.x,p.y)
+   else
+    sp=p.sp
+    sspr(sp.x,sp.y,sp.w,sp.h,p.x,p.y)
+   end
   end
+ end
+end
+
+function _draw()
+ cls()
+
+ if roomtrans!="" then
+  local c0x=0
+  local c0y=0
+  local c1x=0
+  local c1y=0
+
+  local f=(t()-roomtranst)/0.75
+  local nr
+  if roomtrans=="n" then
+   nr=rooms[frog.r].n
+   c0y=f*96
+   c1y=f*96-96
+  elseif roomtrans=="e" then
+   nr=rooms[frog.r].e
+   c0x=f*128
+   c1x=f*128-128
+  elseif roomtrans=="s" then
+   f=1-f
+   nr=rooms[frog.r].s
+   c1y=f*96
+   c0y=f*96-96
+  else
+   assert(roomtrans=="w")
+   f=1-f
+   nr=rooms[frog.r].w
+   c1x=f*128
+   c0x=f*128-128
+  end
+
+  camera(c0x,c0y)
+  draw_room(frog.r)
+
+  camera(c1x,c1y)
+  draw_room(nr)
+
+  camera()
+ else
+  draw_room(frog.r)
  end
 
  draw_ui()
@@ -369,6 +349,7 @@ function event_frog_col_item(
    add(particles,{
     x=item.x,
     y=item.y,
+    r=frog.r,
     vx=-1.2,
     vy=-4,
     ax=0,
@@ -378,6 +359,7 @@ function event_frog_col_item(
    add(particles,{
     x=item.x,
     y=item.y+4,
+    r=frog.r,
     vx=-1,
     vy=-3,
     ax=0,
@@ -386,6 +368,41 @@ function event_frog_col_item(
    })
   end
  end
+end
+
+function draw_froggo()
+ ptile=mget2((frog.x+4)\8,(frog.y+4)\8)
+ pspr=frog.sp;
+ pspr+=flr(t()*4)%2
+
+ if frog.dx==0 then
+  jump=false
+ elseif (btn(⬅️) or btn(➡️))
+  and jump==false then
+  jump=true
+  tjump=flr(t()*frog.dx*4)
+ end
+
+ sprlist={16,18,19,20}
+ if jump then
+  dtjump=flr(t()*frog.dx*4)-tjump
+  pspr=sprlist[dtjump%4+1]
+ end
+
+ // froggo outline
+ if fget(ptile,1) then
+  for i=3,11,4 do pal(i,0) end
+  spr(pspr,frog.x-1,frog.y,1,1,frog.left)
+  spr(pspr,frog.x+1,frog.y,1,1,frog.left)
+  spr(pspr,frog.x,frog.y-1,1,1,frog.left)
+  spr(pspr,frog.x,frog.y+1,1,1,frog.left)
+
+  pal()
+  palt(0,false)
+  palt(4,true)
+ end
+
+ spr(pspr,frog.x,frog.y,1,1,frog.left)
 end
 
 -->8
@@ -470,11 +487,80 @@ end
 
 -- after init_rx functions!
 rooms={
- [0]={e=1}, // entry
+ [0]={e=1,w=2}, // entry
  [1]={w=0}, // first room castle
  [2]={w=2,e=0,init=init_r2}, // repeating garden
 }
 
+function detect_roomtrans()
+ local nr=nil
+ local room=rooms[frog.r]
+ if frog.x+frog.bb.x<0 then
+  if room.w==nil then
+   frog.x=-frog.bb.x
+  else
+   roomtrans="w"
+   roomtranst=t()
+   nr=rooms[frog.r].w
+  end
+  frog.dx=0
+ elseif frog.x+frog.bb.x+frog.bb.w>=128 then
+  if room.e==nil then
+   frog.x=128-frog.bb.x-frog.bb.w
+  else
+   roomtrans="e"
+   roomtranst=t()
+   nr=rooms[frog.r].e
+  end
+  frog.dx=0
+ elseif frog.y+frog.bb.y<0 then
+  if room.n==nil then
+   frog.y=-frog.bb.y
+  else
+   roomtrans="n"
+   roomtranst=t()
+   nr=rooms[frog.r].n
+  end
+  frog.dy=0
+ elseif frog.y+frog.bb.y+frog.bb.h>=96 then
+  if room.s==nil then
+   frog.y=96-frog.bb.y-frog.bb.h
+  else
+   roomtrans="s"
+   roomtranst=t()
+   nr=rooms[frog.r].s
+  end
+  frog.dy=0
+ end
+
+ if nr!=nil then
+  if(rooms[nr].init) rooms[nr].init()
+ end
+end
+
+function update_roomtrans()
+ local done=t()>=0.75+roomtranst
+ if done then
+  local room=rooms[frog.r]
+
+  if roomtrans=="n" then
+   frog.r=room.n
+   frog.y=96-frog.bb.y-frog.bb.h-1
+  elseif roomtrans=="e" then
+   frog.r=room.e
+   frog.x=-frog.bb.x
+  elseif roomtrans=="s" then
+   frog.r=room.s
+   frog.y=-frog.bb.y
+  else
+   assert(roomtrans=="w")
+   frog.r=room.w
+   frog.x=128-frog.bb.x-frog.bb.w-1
+  end
+
+  roomtrans="" // finish transition
+ end
+end
 __gfx__
 0000000000000000000000004444444400666000000000000000000000000000000000000000000000000000dddddddd33333333333333335444444433333333
 000000000000000000000000446664440600060000000000000bb00000000000000000000000000000000000dddddddd3333333333bb3b334445444433b3333b
