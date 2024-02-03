@@ -60,6 +60,11 @@ function _update()
 
  room=rooms[frog.r]
 
+ init_func=room.init
+ if init_func!=nil then
+  init_func()
+ end
+
  if frog.x+frog.bb.x<0 then
   if room.w==nil then
    frog.x=-frog.bb.x
@@ -454,10 +459,16 @@ end
 
 -->8
 --room layout
+
+function init_r2()
+ prints[1]="hello!"
+end
+
+-- after init_rx functions!
 rooms={
  [0]={e=1}, // entry
  [1]={w=0}, // first room castle
- [2]={w=2,e=0}, // repeating garden
+ [2]={w=2,e=0,init=init_r2}, // repeating garden
 }
 
 __gfx__
