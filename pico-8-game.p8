@@ -29,13 +29,11 @@ function _init()
  particles={}
 
  frog={
-  w=8, --width
-  h=8, --height
-  bb={x=1,y=3,w=6,h=5},
   x=8, --x position
   y=44, --y position
   r=0,
   sp=16, --sprite index
+  bb={x=1,y=3,w=6,h=5},
   dx=0, --x speed
   dy=0, --y speed
   left=false, --facing left
