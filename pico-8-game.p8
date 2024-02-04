@@ -588,10 +588,27 @@ function round_wall_corners(r)
   for dy=0,15 do
    local sp=mget2(dx,dy)
    if sp==31 then
-    sspr(96,8,1,1,8*dx,8*dy)
-    sspr(96+7,8,1,1,8*dx+7,8*dy)
-    sspr(96,8+7,1,1,8*dx,8*dy+7)
-    sspr(96+7,8+7,1,1,8*dx+7,8*dy+7)
+    local lsp=mget2(dx-1,dy)
+    local rsp=mget2(dx+1,dy)
+    local tsp=mget2(dx,dy-1)
+    local bsp=mget2(dx,dy+1)
+
+    if lsp==11 then
+     if tsp==11 then
+      sspr(96,8,1,1,8*dx,8*dy)
+     end
+     if bsp==11 then
+      sspr(96,8+7,1,1,8*dx,8*dy+7)
+     end
+    end
+    if rsp==11 then
+     if tsp==11 then
+      sspr(96+7,8,1,1,8*dx+7,8*dy)
+     end
+     if bsp==11 then
+      sspr(96+7,8+7,1,1,8*dx+7,8*dy+7)
+     end
+    end
    end
   end
  end
