@@ -252,8 +252,8 @@ end
 vel=1.5
 
 function froggo_movement()
- dx=0
- dy=0
+ local dx=0
+ local dy=0
 
  l=tonum(btn(⬅️))
  r=tonum(btn(➡️))
@@ -278,7 +278,7 @@ function froggo_movement()
   end
  end
 
- dx,dy=froggo_collision(dx,dy)
+ local dx,dy=froggo_collision(dx,dy)
 
  frog.dx=dx
  frog.dy=dy
