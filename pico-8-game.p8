@@ -583,7 +583,6 @@ function update_roomtrans()
 end
 
 function round_wall_corners(r)
- prints[1]="hello"
  for dx=0,15 do
   for dy=0,15 do
    local sp=mget2(dx,dy)
