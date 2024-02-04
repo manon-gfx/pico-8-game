@@ -134,17 +134,17 @@ function draw_item(i)
     i.sparky=i.y+rnd(8)
     i.sparki=true
    end
-   sx=i.sparkx
-   sy=i.sparky
+   local sx=i.sparkx
+   local sy=i.sparky
    circ(sx, sy, 0, 7)
   elseif magic==1 then
-   sx=i.sparkx
-   sy=i.sparky
+   local sx=i.sparkx
+   local sy=i.sparky
    circ(sx, sy, 1, 6)
    i.sparki=false
   elseif magic==2 then
-   sx=i.sparkx
-   sy=i.sparky
+   local sx=i.sparkx
+   local sy=i.sparky
    pset(sx-2, sy, 5)
    pset(sx+2, sy, 5)
    pset(sx, sy-2, 5)
