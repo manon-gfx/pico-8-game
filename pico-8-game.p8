@@ -10,6 +10,8 @@ function _init()
  roomtrans=""
  roomtranst=t()
 
+ inventory={}
+ particles={}
  objs={}
  for i=0,#rooms do
   objs[i]={}
@@ -21,14 +23,12 @@ function _init()
  add(objs[0], --lock
   {t="lock0",x=116,y=44,sp=3,
    bb={x=0,y=3,w=8,h=3}})
- add(objs[1],
+ add(objs[1], --acorn
   {t="acorn",x=64,y=64-16,sp=1,
    bb={x=0,y=0,w=8,h=8},sparks=true})
- add(objs[1],
+ add(objs[1], --squirrel
   {t="squir",x=32,y=16,sp=7,
    bb={x=0,y=0,w=8,h=16}})
- inventory={}
- particles={}
 
  frog={
   x=8, --x position
@@ -64,8 +64,7 @@ function _update()
  end
 
  -- update particles
- i=1
- while i<=#particles do
+ for i=#particles,1,-1 do
   p=particles[i]
   p.vx+=p.ax
   p.vy+=p.ay
@@ -79,9 +78,7 @@ function _update()
    bb={x=p.x,y=p.y,w=p.sp.w,h=p.sp.h}
   end
 
-  if aabb_overlap(bb, sbb) then
-   i+=1
-  else
+  if not aabb_overlap(bb, sbb) then
    deli(particles, i)
   end
  end
