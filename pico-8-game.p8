@@ -439,12 +439,12 @@ function draw_ui()
  print("items", 105, 100, 7)
  rect(103, 98, 125, 125, 6)
  -- current time --
- x={[0]=105,116}
- y={[0]=106,116}
+ local x={[0]=105,116}
+ local y={[0]=106,116}
 
  palt(0,false)palt(15,true)
  for i=1,min(#inventory,4) do
-  spr(inventory[i].sp, x[(i-1)\2], y[(i-1)\2])
+  spr(inventory[i].sp, x[(i-1)%2], y[(i-1)\2])
  end
  palt()
 end
