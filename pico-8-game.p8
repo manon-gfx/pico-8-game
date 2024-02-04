@@ -128,6 +128,7 @@ function draw_item(i)
   -- draw sprakle effect
  if i.sparks then
   magic=flr(t()*8)%6
+  if(i.sparki==nil)magic=0
   if magic==0 then
    if not i.sparki then
     i.sparkx=i.x+rnd(8)
