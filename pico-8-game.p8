@@ -145,9 +145,6 @@ function draw_room_map(r)
 end
 function draw_room_obj(r)
 
- palt(0,false)
- palt(15,true)
-
  -- draw objects in room
  foreach(objs[r], draw_obj)
 
@@ -165,12 +162,13 @@ function draw_room_obj(r)
    end
   end
  end
-
- palt()
 end
 
 function _draw()
  cls()
+
+ palt(0,false)
+ palt(15,true)
 
  if roomtrans!="" then
   local c0x=0
