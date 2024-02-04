@@ -136,7 +136,7 @@ end
 function draw_room_map(r)
  local rx=(r%8)*16
  local ry=(r\8)*12
- map(rx,ry, 0,0, 16,12)
+ map(rx,ry,0,0,16,12)
 
  -- corner rounding
  round_wall_corners(r)
@@ -422,12 +422,15 @@ end
 --helpers
 
 -- mget with room correction
-function mget2(x,y)
+function mget2(x,y,r)
+ if r==nil then
+  r=frog.r
+ end
  if x<0 or x>=16 or y<0 or y>=12 then
   return 0
  else
-  x+=(frog.r%8)*16
-  y+=(frog.r\8)*12
+  x+=(r%8)*16
+  y+=(r\8)*12
   return mget(x,y)
  end
 end
@@ -562,12 +565,12 @@ end
 function round_wall_corners(r)
  for dx=0,15 do
   for dy=0,15 do
-   local sp=mget2(dx,dy)
+   local sp=mget2(dx,dy,r)
    if sp==27 or sp==31 then
-    local lsp=mget2(dx-1,dy)
-    local rsp=mget2(dx+1,dy)
-    local tsp=mget2(dx,dy-1)
-    local bsp=mget2(dx,dy+1)
+    local lsp=mget2(dx-1,dy,r)
+    local rsp=mget2(dx+1,dy,r)
+    local tsp=mget2(dx,dy-1,r)
+    local bsp=mget2(dx,dy+1,r)
 
     -- wall corners
     if sp==31 then
