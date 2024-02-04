@@ -565,26 +565,45 @@ function round_wall_corners(r)
  for dx=0,15 do
   for dy=0,15 do
    local sp=mget2(dx,dy)
-   if sp==31 then
+   if sp==27 or sp==31 then
     local lsp=mget2(dx-1,dy)
     local rsp=mget2(dx+1,dy)
     local tsp=mget2(dx,dy-1)
     local bsp=mget2(dx,dy+1)
 
-    if lsp==11 then
-     if tsp==11 then
-      sspr(96,8,1,1,8*dx,8*dy)
+    -- wall corners
+    if sp==31 then
+     if lsp==11 then
+      if tsp==11 then
+       sspr(96,8,4,4,8*dx,8*dy)
+      end
+      if bsp==11 then
+       sspr(96,12,4,4,8*dx,8*dy+4)
+      end
      end
-     if bsp==11 then
-      sspr(96,8+7,1,1,8*dx,8*dy+7)
+     if rsp==11 then
+      if tsp==11 then
+       sspr(100,8,4,4,8*dx+4,8*dy)
+      end
+      if bsp==11 then
+       sspr(100,12,4,4,8*dx+4,8*dy+4)
+      end
      end
     end
-    if rsp==11 then
-     if tsp==11 then
-      sspr(96+7,8,1,1,8*dx+7,8*dy)
+
+    -- carpet franjes
+    if sp==27 then
+     if lsp!=27 then
+      sspr(80,8,4,8,8*dx,8*dy)
      end
-     if bsp==11 then
-      sspr(96+7,8+7,1,1,8*dx+7,8*dy+7)
+     if rsp!=27 then
+      sspr(84,8,4,8,8*dx+4,8*dy)
+     end
+     if tsp!=27 then
+      sspr(80,0,8,4,8*dx,8*dy)
+     end
+     if bsp!=27 then
+      sspr(80,4,8,4,8*dx,8*dy+4)
      end
     end
    end
