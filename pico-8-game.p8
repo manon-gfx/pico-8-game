@@ -4,35 +4,26 @@ __lua__
 --main
 function _init()
  print("♥")
+ -- init debug print
+ prints={}
 
  roomtrans=""
  roomtranst=t()
- items={} -- list of items on screen
 
- -- spawn key
- add(items, {
-  t="key0",
-  x=8,
-  y=16,
-  r=0,
-  sp=2,
-  bb={x=0,y=3,w=8,h=3},
-  sparks=true,
-  delete=false,
- })
+ objs={}
+ for i=0,#rooms do
+  objs[i]={}
+ end
 
- -- spawn lock
- add(items, {
-  t="lock0",
-  x=116,
-  y=44,
-  r=0,
-  sp=3,
-  bb={x=0,y=3,w=8,h=3},
-  delete=false,
- })
- add(items, {t="acorn",x=64,y=64,r=1,sp=1,
-  bb={x=0,y=0,w=8,h=8},sparks=true})
+ add(objs[0], --key
+  {t="key0",x=8,y=16,sp=2,
+   bb={x=0,y=3,w=8,h=3},sparks=true})
+ add(objs[0], --lock
+  {t="lock0",x=116,y=44,sp=3,
+   bb={x=0,y=3,w=8,h=3}})
+ add(objs[1],
+  {t="acorn",x=64,y=64-16,sp=1,
+   bb={x=0,y=0,w=8,h=8},sparks=true})
 
  inventory={}
  particles={}
@@ -53,9 +44,6 @@ function _init()
 
  -- create wasx variables
  wasbuttons()
-
- -- init debug print
- prints={}
 end
 
 function _update()
@@ -66,12 +54,12 @@ function _update()
   update_roomtrans()
  end
 
- -- froggo item collision
+ -- froggo object collision
  a=trans_aabb(frog.bb,frog.x,frog.y)
- for i in all(items) do
-  b=trans_aabb(i.bb,i.x,i.y)
-  if frog.r==i.r and aabb_overlap(a,b) then
-   event_frog_col_item(frog, i)
+ for o in all(objs[frog.r]) do
+  b=trans_aabb(o.bb,o.x,o.y)
+  if aabb_overlap(a,b) then
+   event_frog_col_object(frog, o)
   end
  end
 
@@ -98,59 +86,51 @@ function _update()
   end
  end
 
- -- clean up items marked for
+ -- clean up objects marked for
  -- deletion
- i=1
- while i<=#items do
-  it=items[i]
-  if it.delete then
-   deli(items,i)
-  else
-   i+=1
-  end
+ local olist=objs[frog.r]
+ for i=#olist,1,-1 do
+  local o=olist[i]
+  if(o.delete) deli(olist,i)
  end
 end
 
-function draw_item(i)
- if i.tcol!=nil then
+function draw_obj(o)
+ if o.tcol!=nil then
   palt(15,false)
-  palt(i.tcol,true)
+  palt(o.tcol,true)
  end
 
  -- draw item sprite
- spr(i.sp, i.x, i.y)
+ spr(o.sp, o.x, o.y)
 
- if i.tcol!=nil then
+ if o.tcol!=nil then
   palt(15,true)
-  palt(i.tcol,false)
+  palt(o.tcol,false)
  end
 
   -- draw sprakle effect
- if i.sparks then
+ if o.sparks then
   magic=flr(t()*8)%6
-  if(i.sparki==nil)magic=0
+  if(o.sparki==nil)magic=0
   if magic==0 then
-   if not i.sparki then
-    i.sparkx=i.x+rnd(8)
-    i.sparky=i.y+rnd(8)
-    i.sparki=true
+   if not o.sparki then
+    o.sparkx=o.x+rnd(8)
+    o.sparky=o.y+rnd(8)
+    o.sparki=true
    end
-   local sx=i.sparkx
-   local sy=i.sparky
-   circ(sx, sy, 0, 7)
+   pset(o.sparkx,o.sparky,7)
   elseif magic==1 then
-   local sx=i.sparkx
-   local sy=i.sparky
-   circ(sx, sy, 1, 6)
-   i.sparki=false
+   circ(o.sparkx, o.sparky, 1, 6)
+   o.sparki=false
   elseif magic==2 then
-   local sx=i.sparkx
-   local sy=i.sparky
+   local sx=o.sparkx
+   local sy=o.sparky
    pset(sx-2, sy, 5)
    pset(sx+2, sy, 5)
    pset(sx, sy-2, 5)
    pset(sx, sy+2, 5)
-   i.sparki=false
+   o.sparki=false
   end
  end
 end
@@ -168,12 +148,8 @@ function draw_room_obj(r)
  palt(0,false)
  palt(15,true)
 
- -- draw items
- for i in all(items) do
-  if i.r==r then
-   draw_item(i)
-  end
- end
+ -- draw objects in room
+ foreach(objs[r], draw_obj)
 
  -- draw froggo
  draw_froggo()
@@ -250,9 +226,7 @@ function _draw()
  if #prints>0 then
   camera(0,0)
   print("",0,0,7)
-  for p in all(prints) do
-   print(p)
-  end
+  foreach(prints, print)
  end
  prints={}
 end
@@ -343,14 +317,14 @@ function froggo_collision(dx,dy)
  return dx, dy
 end
 
-function event_frog_col_item(
+function event_frog_col_object(
  frog,
- item)
- if item.t=="key0" then
+ obj)
+ if obj.t=="key0" then
   sfx(0)
-  item.delete=true
-  add(inventory, {t=item.t,sp=item.sp})
- elseif item.t=="lock0" then
+  obj.delete=true
+  add(inventory, {t=obj.t,sp=obj.sp})
+ elseif obj.t=="lock0" then
   keyi=find_in_inv("key0")
   if keyi!=nil then
    sfx(0)
@@ -359,12 +333,12 @@ function event_frog_col_item(
    mset(15,5,62)
    mset(15,6,61)
 
-   item.delete=true
+   obj.delete=true
 
    -- spawn particles
    add(particles,{
-    x=item.x,
-    y=item.y,
+    x=obj.x,
+    y=obj.y,
     r=frog.r,
     vx=-1.2,
     vy=-4,
@@ -373,8 +347,8 @@ function event_frog_col_item(
     sp={x=32,y=0,w=8,h=4}
    })
    add(particles,{
-    x=item.x,
-    y=item.y+4,
+    x=obj.x,
+    y=obj.y+4,
     r=frog.r,
     vx=-1,
     vy=-3,
@@ -383,10 +357,10 @@ function event_frog_col_item(
     sp={x=32,y=4,w=8,h=4}
    })
   end
- elseif item.t=="acorn" then
+ elseif obj.t=="acorn" then
   sfx(0)
-  item.delete=true
-  add(inventory, {t=item.t,sp=item.sp})
+  obj.delete=true
+  add(inventory, {t=obj.t,sp=obj.sp})
  end
 end
 
