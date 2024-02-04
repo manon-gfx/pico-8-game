@@ -485,7 +485,22 @@ function find_in_inv(tag)
  -- return nil
 end
 
+-- get surrounding sprites
+function surroundings(x,y,sp,r)
+ mask=0
+ for i=0,8 do
+  local dx=1-i%3
+  local dy=1-i\3
+  if(mget2(x+dx,y+dy,r)==sp) then
+   mask|=(1<<i)
+  end
+ end
+ return mask
+end
 
+function contains(full,part)
+ return (full&part)==part
+end
 -->8
 --room layout
 
@@ -574,46 +589,38 @@ function round_wall_corners(r)
  for dx=0,15 do
   for dy=0,15 do
    local sp=mget2(dx,dy,r)
-   if sp==27 or sp==31 then
-    local lsp=mget2(dx-1,dy,r)
-    local rsp=mget2(dx+1,dy,r)
-    local tsp=mget2(dx,dy-1,r)
-    local bsp=mget2(dx,dy+1,r)
 
-    -- wall corners
-    if sp==31 then
-     if lsp==11 then
-      if tsp==11 then
-       sspr(96,8,4,4,8*dx,8*dy)
-      end
-      if bsp==11 then
-       sspr(96,12,4,4,8*dx,8*dy+4)
-      end
-     end
-     if rsp==11 then
-      if tsp==11 then
-       sspr(100,8,4,4,8*dx+4,8*dy)
-      end
-      if bsp==11 then
-       sspr(100,12,4,4,8*dx+4,8*dy+4)
-      end
-     end
+   -- wall corners
+   if sp==31 then
+    smask=surroundings(dx,dy,11,r)
+    if contains(smask,0b010100000) then
+     sspr(96,8,4,4,8*dx,8*dy)
     end
+    if contains(smask,0b000100010) then
+     sspr(96,12,4,4,8*dx,8*dy+4)
+    end
+    if contains(smask,0b010001000) then
+     sspr(100,8,4,4,8*dx+4,8*dy)
+    end
+    if contains(smask,0b000001010) then
+     sspr(100,12,4,4,8*dx+4,8*dy+4)
+    end
+   end
 
-    -- carpet franjes
-    if sp==27 then
-     if lsp!=27 then
-      sspr(80,8,4,8,8*dx,8*dy)
-     end
-     if rsp!=27 then
-      sspr(84,8,4,8,8*dx+4,8*dy)
-     end
-     if tsp!=27 then
-      sspr(80,0,8,4,8*dx,8*dy)
-     end
-     if bsp!=27 then
-      sspr(80,4,8,4,8*dx,8*dy+4)
-     end
+   -- carpet franjes
+   if sp==27 then
+    smask=surroundings(dx,dy,27,r)
+    if (smask&0b000100000)==0 then
+     sspr(80,8,4,8,8*dx,8*dy)
+    end
+    if (smask&0b000001000)==0 then
+     sspr(84,8,4,8,8*dx+4,8*dy)
+    end
+    if (smask&0b010000000)==0 then
+     sspr(80,0,8,4,8*dx,8*dy)
+    end
+    if (smask&0b000000010)==0 then
+     sspr(80,4,8,4,8*dx,8*dy+4)
     end
    end
   end
